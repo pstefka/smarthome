@@ -52,16 +52,19 @@ flowchart TD
   DNSD --> DNS12
   DNS12 -- yes --> DNS1
   DNS12 -- no --> DNS2
-  CDNS{is Custom FQDN like hass.svc.local}
+  CDNS{is Custom FQDN, e.g. budabuda.duckdns.org}
   DNS1 --> CDNS
   DNS2 --> CDNS
-  
+
+  ISA{Is a A record type request}
   LRESOLVE[Resolve localy]
   WRESOLVE[Resolve at Wifi from DHCP information]
   UDNS[Resolve at Upstream DNS]
 
   DHCPDNS{is hostname from DHCP / IP address}
-  CDNS -- yes --> LRESOLVE
+  CDNS -- yes --> ISA
+  ISA -- yes --> LRESOLVE
+  ISA -- no, e.g. TXT --> UDNS
   CDNS -- no --> DHCPDNS
 
   DHCPDNS -- yes --> WRESOLVE

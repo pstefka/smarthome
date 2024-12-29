@@ -29,7 +29,9 @@ flowchart TD
   - provided by Adguard Home
   - lives at N100 (primary) / Intel NUC (secondary)
   - synchronized using [Adguard Home Sync](https://github.com/bakito/adguardhome-sync)
-- upstream
+- DNS MIM
+  - DNS must override budabuda.duckdns.org A records with local IP, but allow forwarding of TXT records to upstream (for ACME DNS challenge)
+- upstream 
 
 ```mermaid
 flowchart TD

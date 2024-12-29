@@ -30,8 +30,9 @@ flowchart TD
   - lives at N100 (primary) / Intel NUC (secondary)
   - synchronized using [Adguard Home Sync](https://github.com/bakito/adguardhome-sync)
 - DNS MIM
-  - DNS must override budabuda.duckdns.org A records with local IP, but allow forwarding of TXT records to upstream (for ACME DNS challenge)
-- upstream 
+  - some platforms do not use DNS provided by DHCP, e.g. Android uses Google DNS for data scraping
+    - DNS director feature of Asus routers is used to override this, i.e. although client fires request to 8.8.8.8 router overrides the target and lets DHCP DNS resolve the request 
+  - DNS must override budabuda.duckdns.org A records with local IP (so Let's encrypt certificates can be used internally), but allow forwarding of TXT records to upstream (for ACME DNS challenge)
 
 ```mermaid
 flowchart TD

@@ -104,7 +104,7 @@ flowchart TD
 
 |Name|Pihole|Adguard Home|Blocky|
 |---|---|---|---|
-|Description|- config using GUI only|- config using GUI / config file|- manual declarative configuration only|
+|Description|- config using GUI and ENV|- config using GUI / config file|- manual declarative configuration only|
 |||- sync between instances available as a project||
 |||- available as an HAOS addon||
 

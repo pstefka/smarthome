@@ -130,6 +130,12 @@ flowchart TD
 
 ### Backup
 
+### Remote Access
+
 ## Setup
 
+### Code
+
 - ansible
+
+### Manual

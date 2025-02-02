@@ -211,6 +211,21 @@ flowchart TD
   - pornonas
   - proxmox  
 
+- k8s backup
+
+```mermaid
+flowchart TD
+
+    VELERO --back up--> PV
+    VELERO --to --> NOOBAA
+    NOOBAA --backingstore--> CSI-NFS-PV
+    CSI-NFS --provides--> CSI-NFS-PV
+    CSI-NFS --manages--> NAS
+    CSI-NFS-PV --nfs--> NAS
+```
+
+or use host path duplicati
+
 ### Remote Access
 
 - zerotier = current setup

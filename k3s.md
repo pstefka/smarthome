@@ -106,6 +106,8 @@ rm argocd-linux-amd64
 
 ### K3s
 
+#### Server
+
 - /etc/rancher/k3s/config.yaml
 
 ```yaml
@@ -124,8 +126,36 @@ node-taint:
 - Install K3s as systemd service
 
 ```sh
-- curl -sfL https://get.k3s.io | sh -
+curl -sfL https://get.k3s.io | sh -
 ```
+
+#### Agent
+
+- /etc/rancher/k3s/config.yaml
+
+```yaml
+token: <token>
+server: budabuda-k3s.duckdns.org
+
+write-kubeconfig-mode: "0640"
+write-kubeconfig-group: peto
+tls-san:
+  - "k3s.budabuda.duckdns.org"
+flannel-backend: none
+disable-network-policy: true
+node-taint:
+  - node.cilium.io/agent-not-ready
+
+#debug: true
+```
+
+- Install K3s as systemd service
+
+```sh
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC=agent sh -
+```
+
+#### SW
 
 - Install Cilium
 

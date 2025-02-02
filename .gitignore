@@ -1,5 +1,2 @@
 .envrc
-*.swp
-cookie.txt
-*.pem
-*.key
+*.key*

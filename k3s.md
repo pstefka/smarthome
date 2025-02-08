@@ -85,6 +85,23 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC=agent sh -
 
 ### SW
 
+- Customize Traefik => /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
+      kubernetesIngress:
+        allowExternalNameServices: true
+```
+
 - Install Cilium
 
 ```yaml

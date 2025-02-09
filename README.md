@@ -9,13 +9,20 @@
 ```mermaid
 flowchart TD
 
-  W[Wifi] --> RX[Router X]
-  W --> N100
-  W --> NAS
-  W --> NUC[Intel NUC]
-  RX --> HUE[Philip HUE]
-  RX --> PC
-  RX --> RASPI?
+  W[Wifi] --ethernet--> RX[Router X]
+  W --ethernet--> N100
+  W --ethernet--> NAS
+  W --ethernet--> NUC[Intel NUC]
+  RX --ethernet--> HUE[Philip HUE]
+  RX --ethernet--> PC
+  RX --ethernet--> RASPI?
+```
+
+```mermaid
+flowchart TD
+
+  HAOS --> Zigbee
+  HAOS --> ZWave
 ```
 
 ### Compute
@@ -152,25 +159,47 @@ flowchart TD
 ||- no Docker integration|- first class dynamic integration with Docker|- integration with Docker|
 ||- available as an HAOS addon|||
 
+```mermaid
+flowchart TD
+
+subgraph k3s
+
+    VIP[MetalLB VIP] --> K3SI
+    VIP --> K3SI2
+
+    subgraph NUC agent node
+        K3SI[Traefik Ingress]
+    end
+
+    subgraph K3S server node
+        K3SI2[Traefik Ingress]
+    end
+end
+
+K3SI2 -- internal n100 network--> haos
+```
+
 ### Services
 
 - N100
+  - Semaphore (LXC)
   - HAOS
-  - Uptime kuma
-  - Zero tier
-  - Heimdall
-  - Adguard
-  - Nginx / Traefik / Caddy
-  - Semaphore (Ansible)
-  - MQTT broker
-  - Node-RED
-  - ZwareJS Server
-  - Portainer
-  - SSHwifty
-  - Room Assistant ???
-  - Ombi
-  - ***arr
-  - Jackett
+    - Uptime kuma
+    - Zero tier
+    - ZwareJS Server
+  - Ubuntu
+    - K3s
+      - Nginx / Traefik / Caddy
+      - Heimdall
+      - Adguard
+      - MQTT broker
+      - Node-RED
+      - Portainer
+      - SSHwifty
+      - Room Assistant ???
+      - Ombi
+      - ***arr
+      - Jackett
 
 - NUC
   - Adguard + Adguard sync

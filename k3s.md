@@ -100,6 +100,9 @@ spec:
         allowExternalNameServices: true
       kubernetesIngress:
         allowExternalNameServices: true
+    logs:
+      access:
+        enabled: true
 ```
 
 - Install Cilium

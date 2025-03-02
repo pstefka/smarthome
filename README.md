@@ -144,6 +144,46 @@ flowchart TD
 - manages [Let's Encrypt certificate](#certificates)
 - ideally has interface to Docker for dynamic provisioning
 
+
+```mermaid
+flowchart TD
+
+subgraph K8s
+
+  user((User))
+
+  VIP[MetalLB floating VIP] --> nuci
+  VIP --> n100i
+
+  subgraph NUC agent node
+    subgraph Traefik ingress NUC
+      nuci[Traefik Ingress LB]
+      nucid[Traefik Ingress direct]
+    end
+    nucs[Service]
+  end
+
+  subgraph N100 server node
+    subgraph Traefik ingress N100
+      n100i[Traefik Ingress LB]
+      n100id[Traefik Ingress direct]
+    end
+    n100s[Service]
+  end
+end
+
+user -- direct to NUC node --> nucid
+user --> VIP
+user -- direct to N100 node --> n100id
+
+nucid --> nucs
+nuci --> n100s
+nuci --> nucs
+n100id --> n100s
+n100i --> nucs
+n100i --> n100s
+```
+
 **\*\* TODO \*\***
 
 |Name|Nginx Proxy Manager|Traefik|Caddy|
@@ -243,8 +283,22 @@ or use host path duplicati
   - running inside Semaphore
     - reads code + config from Gitrepo
     - secrets are local to Semaphore
- 
-- Gitops using ArgoCD
+
+#### GitOps
+
+- Helmfile
+  - grouping several charts / manifests to create new components
+  - environments configuration
+  - keep config modular & DRY
+  - enables passing secrets to helm value files!
+  - a Configuration Management Plugins (CMP) is required to work with ArgoCD
+
+  - <https://helmfile.readthedocs.io/en/latest/#glob-patterns>
+
+- ArgoCD
+
+- ArgoCD + Helmfile 
+  - <https://www.kubeblog.com/argocd/using-argocd-with-helmfile/> => <https://github.com/travisghansen/argo-cd-helmfile>
 
 ### Upgrades
 

@@ -1,0 +1,9 @@
+clusterIssuer:
+  email: www.stefi@gmail.com
+  production:
+    create: true
+  staging:
+    create: true
+duckdns:
+  token: df4e1ee0-88e9-4539-8f9f-50c6ff1352d9
+logLevel: 2

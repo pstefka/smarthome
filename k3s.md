@@ -164,6 +164,14 @@ argocd login argocd.k3s.budabuda.duckdns.org
 argocd app create smarthome --repo https://github.com/pstefka/smarthome.git --path manifests --dest-server https://kubernetes.default.svc --dest-namespace smarthome
 ```
 
+## DNS challenge
+
+Needs to work with DuckDNS
+
+- Traefik inbuild ACME is not compatible with DuckDNS
+- cert-manager needs to use webhook integration toward DuckDNS webhook provider
+  - is working correctly?
+
 ## TODO
 
 - use K3s Helm controller for installation <https://docs.k3s.io/helm>

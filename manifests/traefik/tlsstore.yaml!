@@ -1,0 +1,14 @@
+# is used for requests without SNI / non matching hosts ??
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: kube-system
+
+spec:
+  certificates:
+    - secretName: nuc-ingress-cert
+    - secretName: n100-ingress-cert
+  defaultCertificate:
+    secretName: svc-default-ingress-cert

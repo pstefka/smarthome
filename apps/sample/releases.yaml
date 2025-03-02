@@ -1,0 +1,22 @@
+templates:
+  default:
+    namespace: apc-{{`{{.Release.Name}}`}}
+    chart: chart.repo/{{`{{.Release.Name}}`}}
+    version: {{`{{ .StateValues.sample.chartVersion }}`}}
+    values:
+    - file+ys://values.{{`{{.Environment.Name}}`}}.yaml?optional
+
+    installed: {{ .Values | get "myrelease.enabled" false }}
+    chart: mychart
+    version: {{ .Values.myrelease.version }}
+    labels:
+      chart: mychart
+
+# releases:
+
+# - name: sample
+#   condition: sample.enabled
+#   chart: chart.repo/{{`{{.Release.Name}}`}}
+#   version: {{`{{ .StateValues.sample.chartVersion }}`}}
+#   values:
+#   - file+ys://values.{{`{{.Environment.Name}}`}}.yaml?optional

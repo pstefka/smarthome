@@ -1,0 +1,10 @@
+bases:
+- repositories.yaml # keep repositories same for all envs
+- releases.yaml
+
+releases:
+
+- name: sample
+  namespace: apc-sample # can override the template version ?
+  version: {{`{{ .StateValues.sample.chartVersion }}`}} # can override the template version ?
+  inherit: [ { template: default } ]

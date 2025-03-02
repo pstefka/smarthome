@@ -1,0 +1,16 @@
+environments:
+  k3s: 
+    kubeContext: k3s-cluster
+  lab:
+    kubeContext: lab-cluster
+---
+values:
+- ../../values.{{.Environment.Name}}.yaml # globalne per env nastavenia = proxy, ..
+- ../../values.{{.Environment.Name}}.yaml.gotmp?optional # s templatingom
+- ../../versions.{{.Environment.Name}}.yaml # alebo ako sucast env helmfile ?
+---
+helmfiles:
+- path: helmfile.{{.Environment.Name}}.yaml
+  selectorsInherited: true
+# missingFileHandler: Error
+

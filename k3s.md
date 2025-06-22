@@ -184,6 +184,7 @@ argocd app create smarthome --repo https://github.com/pstefka/smarthome.git --pa
 
 ## TODO
 
+- use K3s inbuild LB for ingress <https://docs.k3s.io/networking/networking-services#service-load-balancer>
 - use K3s Helm controller for installation <https://docs.k3s.io/helm>
 - install ArgoCD using helm chart
 - ArgoCD configuration using CRDs

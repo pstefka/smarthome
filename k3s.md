@@ -42,12 +42,13 @@ rm argocd-linux-amd64
 write-kubeconfig-mode: "0640"
 write-kubeconfig-group: peto
 tls-san:
-  - "k3s.budabuda.duckdns.org"
-  - "budabuda-k3s.duckdns.org"
-flannel-backend: none
-disable-network-policy: true
-node-taint:
-  - node.cilium.io/agent-not-ready
+  - "n100.budabuda.duckdns.org"
+  - "budabuda-n100.duckdns.org"
+## in case cilium uncomment
+# flannel-backend: none
+# disable-network-policy: true
+# node-taint:
+#  - node.cilium.io/agent-not-ready
 
 node-label:
   - "name=n100"
@@ -119,7 +120,7 @@ helm upgrade --install cilium cilium/cilium --version 1.16.5 --namespace kube-sy
 
 ```yaml
 global:
-  domain: argocd.budabuda-k3s.duckdns.org
+  domain: argocd.budabuda-n100.duckdns.org
 
 configs:
   params:
@@ -152,13 +153,13 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`argocd.budabuda-k3s.duckdns.org`)
+      match: Host(`argocd.budabuda-n100.duckdns.org`)
       priority: 10
       services:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.budabuda-k3s.duckdns.org`) && Header(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.budabuda-n100.duckdns.org`) && Header(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
@@ -172,7 +173,7 @@ spec:
 
 ```sh
 argocd admin initial-password -n argocd | head -1
-argocd login argocd.k3s.budabuda.duckdns.org
+argocd login argocd.budabuda-n100.duckdns.org
 ```
 
 - Create ArgoCD application

@@ -115,16 +115,34 @@ operator:
 
 ```sh
 helm repo add cilium https://helm.cilium.io/
-helm upgrade --install cilium cilium/cilium --version 1.16.5 --namespace kube-system --values values.yaml
+helm upgrade --install cilium cilium/cilium --version 1.16.5 --namespace kube-system --values values-cilium.yaml
 ```
 
 - Install ArgoCD
 
-```sh
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl patch cm -n argocd argocd-cmd-params-cm -p '{"data":{"server.insecure": "true"}}'
+```yaml
+global:
+  domain: argocd.budabuda-k3s.duckdns.org
+
+configs:
+  params:
+    server.insecure: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    tls: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.tls.certresolver: default
 ```
+
+```sh
+helm repo add argo https://argoproj.github.io/argo-helm
+helm upgrade --install argo-cd argo/argo-cd --version 8.1.1 --namespace argocd --create-namespace --values values-argocd.yaml
+```
+
+alternative Traefik ingressroute CR:
 
 ```yaml
 apiVersion: traefik.io/v1alpha1
@@ -137,13 +155,13 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`argocd.k3s.budabuda.duckdns.org`)
+      match: Host(`argocd.budabuda-k3s.duckdns.org`)
       priority: 10
       services:
         - name: argocd-server
           port: 80
     - kind: Rule
-      match: Host(`argocd.k3s.budabuda.duckdns.org`) && Header(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.budabuda-k3s.duckdns.org`) && Header(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server

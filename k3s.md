@@ -14,7 +14,7 @@ sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
 rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 ```
 
-- Install Helm
+- Install Helm CLI
 
 ```sh
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
@@ -43,10 +43,14 @@ write-kubeconfig-mode: "0640"
 write-kubeconfig-group: peto
 tls-san:
   - "k3s.budabuda.duckdns.org"
+  - "budabuda-k3s.duckdns.org"
 flannel-backend: none
 disable-network-policy: true
 node-taint:
   - node.cilium.io/agent-not-ready
+
+node-label:
+  - "name=n100"
 
 #debug: true
 ```
@@ -57,24 +61,17 @@ node-taint:
 curl -sfL https://get.k3s.io | sh -
 ```
 
+- Get token from `/var/lib/rancher/k3s/server/node-token`
+
 ### Agent
 
 - /etc/rancher/k3s/config.yaml
 
 ```yaml
 token: <token>
-server: budabuda-k3s.duckdns.org
-
-write-kubeconfig-mode: "0640"
-write-kubeconfig-group: peto
-tls-san:
-  - "k3s.budabuda.duckdns.org"
-flannel-backend: none
-disable-network-policy: true
-node-taint:
-  - node.cilium.io/agent-not-ready
-
-#debug: true
+server: https://192.168.1.4:6443
+node-label:
+  - "name=nuc"
 ```
 
 - Install K3s as systemd service

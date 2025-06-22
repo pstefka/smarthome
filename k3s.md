@@ -171,6 +171,8 @@ spec:
     certResolver: default
 ```
 
+<https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/>
+
 ```sh
 argocd admin initial-password -n argocd | head -1
 argocd login argocd.k3s.budabuda.duckdns.org
@@ -187,3 +189,7 @@ argocd app create smarthome --repo https://github.com/pstefka/smarthome.git --pa
 - use K3s Helm controller for installation <https://docs.k3s.io/helm>
 - install ArgoCD using helm chart
 - ArgoCD configuration using CRDs
+- iGPU capability
+  - <https://www.reddit.com/r/selfhosted/comments/121vb07/plex_on_kubernetes_with_intel_igpu_passthrough/>
+  - <https://intel.github.io/intel-device-plugins-for-kubernetes/cmd/gpu_plugin/README.html#installing-driver-and-firmware-for-intel-gpus>
+  - <https://infohub.delltechnologies.com/en-us/l/dell-nativeedge-blueprint-for-k3s-deployment-guide/artifacts-and-binaries-9/2/>

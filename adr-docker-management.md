@@ -4,12 +4,12 @@
 
 |Name      |Portainer|Dockge|Komodo|Dockhand|Dockmon|
 |----------|---------|------|------|--------|-------|
-|Mobile GUI|❌       |✅➖ |      |        |       |
-|Compose   |✅       |✅   |✅    |✅      |✅     |
-|Swarm     |✅       |❌?  |      |        |       |
-|Multi-node|✅       |❌?  |      |        |       |
-|GitOps    |❌       |❌?  |✅    |✅?    |❌    |
-|OIDC      |❌💲    |❌?   |✅?  |✅?    |✅➖  |
+|Mobile GUI|❌       |✅➖ |✅    |✅     |✅➖  |
+|Compose   |✅       |✅   |✅    |✅      |✅    |
+|Swarm     |✅       |❌   |✅    |❌      |❌    |
+|Multi-node|✅       |✅   |✅    |✅      |✅    |
+|GitOps    |❌       |❌   |✅    |✅     |❌    |
+|OIDC      |❌💲    |❌    |✅?  |✅      |✅➖  |
 
 ➕
 

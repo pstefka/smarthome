@@ -226,10 +226,10 @@ flowchart TD
 ## TODO
 
 [] Uptime Kuma migration to HAOS application = in case NUC is turned off => must keep on  
-[] Redis sync for Blocky
-[] Refactor docker networks for greater isolation
-[] Enable SSO for all services
+[] Redis sync for Blocky  
+[] Refactor docker networks for greater isolation  
+[] Enable SSO for all services  
 [] Migration to [Homepage](https://github.com/gethomepage/homepage) ? Currently Uptime Kuma integration requires status pages setup 🤦‍♂️  
 [] [Zero toil](./zero-toil.md)  
-[] Certs for appliance frontends using [scripts](./scripts/)
-[] k3s ?
+[] Certs for appliance frontends using [scripts](./scripts/)  
+[] k3s ?  

@@ -1,0 +1,3 @@
+/talos/_out/* filter=git-crypt diff=git-crypt
+/talos/kubeconfig filter=git-crypt diff=git-crypt
+/talos/.envrc filter=git-crypt diff=git-crypt

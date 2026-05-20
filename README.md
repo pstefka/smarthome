@@ -75,16 +75,16 @@ HUE[Philips HUE bridge]
 
 ### DNS
 
-- DHCP at Wifi serves custom DNS
-- 2 servers failover using keepalived
+- 2 DNS servers failover using keepalived
   - live at N100 (primary) & Intel NUC (secondary)
   - blocking status synchronized using Redis
 - provided by [Blocky](https://github.com/0xERR0R/blocky) using IaC
   - adblocking
   - malware blocking
-- DHCP hostname resolution is forwarded to the DHCP provider
+- DHCP hostname resolution @ .local domain is forwarded to the DHCP provider = Wifi
 - custom FQDN resolution
-- DNS requests (port 53) are overriden on Wifi (DNS Director) to use custom DNS
+- DNS requests (port 53) are overriden on Wifi (DNS Director) to use home DNS
+  - exception are hosts hosting home DNS
 - upstream Cloudflare (1.1.1.1) / Google (8.8.8.8)
  
 <details><summary>DNS request flow (click to expand)</summary>
@@ -109,7 +109,7 @@ flowchart TD
   DNS2[DNS @NUC]
   DNS12 -- no --> DNS2
   
-  CDNS{is Custom FQDN, e.g. budabuda.duckdns.org}
+  CDNS{is Custom FQDN, e.g. budabuda-n100u.duckdns.org}
   DNS1 --> CDNS
   DNS2 --> CDNS
 
@@ -119,7 +119,7 @@ flowchart TD
   UDNS[Resolve at Upstream DNS]
 
 
-  DHCPDNS{is hostname from DHCP / IP address}
+  DHCPDNS{is hostname from .local domain / IP address}
   CDNS -- no --> DHCPDNS
   DHCPDNS -- no --> UDNS
 

@@ -1,0 +1,10 @@
+customization:
+    systemExtensions:
+        officialExtensions:
+            - siderolabs/iscsi-tools
+            - siderolabs/netbird
+            - siderolabs/nfs-utils
+            - siderolabs/qemu-guest-agent
+            - siderolabs/usb-audio-drivers
+    # bootloader: dual-boot # dual boot
+    bootloader: grub # BIOS

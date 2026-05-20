@@ -2,6 +2,9 @@
 
 **\*\*WORK IN PROGRESS\*\***
 
+> [!NOTE]  
+> repo uses git-crypt => please unlock first!
+
 ## Design
 
 ### Networking

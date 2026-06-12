@@ -7,106 +7,70 @@ schema-version = "1.12.0"
 ##  $ flox show gum     <- show all versions of a package
 ## -------------------------------------------------------------------
 [install]
+## default pkg-group
 ansible.pkg-path = "ansible"
-
 argocd.pkg-path = "argocd"
+bat.pkg-path = "bat"
+#caskaydia-cove.pkg-path = "nerd-fonts.caskaydia-cove"
+claude-code.pkg-path = "claude-code"
+crossplane.pkg-path = "crossplane"
+delta.pkg-path = "delta"
+direnv.pkg-path = "direnv"
+fd.pkg-path = "fd"
+gemini-cli.pkg-path = "gemini-cli"
+git.pkg-path = "git"
+glow.pkg-path = "glow"
+go.pkg-path = "go"
+hadolint.pkg-path = "hadolint"
+helm-diff.pkg-path = "kubernetes-helmPlugins.helm-diff"
+helm-schema.pkg-path = "kubernetes-helmPlugins.helm-schema"
+helm-unittest.pkg-path = "kubernetes-helmPlugins.helm-unittest"
+helmfile.pkg-path = "helmfile"
+cht-sh.pkg-path = "cht-sh"
+k9s.pkg-path = "k9s"
+krew.pkg-path = "krew"
+kubecolor.pkg-path = "kubecolor"
+kubectx.pkg-path = "kubectx"
+kubernetes-helm.pkg-path = "kubernetes-helm"
+kubescape.pkg-path = "kubescape"
+kustomize.pkg-path = "kustomize"
+mkcert.pkg-path = "mkcert"
+mkdocs.pkg-path = "mkdocs"
+nelm.pkg-path = "nelm"
+openbao.pkg-path = "openbao"
+openshift.pkg-path = "openshift"
+opentofu.pkg-path = "opentofu"
+podman.pkg-path = "podman"
+pyenv.pkg-path = "pyenv"
+ripgrep.pkg-path = "ripgrep"
+ruby.pkg-path = "ruby"
+s3cmd.pkg-path = "s3cmd"
+sd.pkg-path = "sd"
+starship.pkg-path = "starship"
+stern.pkg-path = "stern"
+talosctl.pkg-path = "talosctl"
+tldr.pkg-path = "tldr"
+yq-go.pkg-path = "yq-go"
+warp-dir.pkg-path = "pstefka/warp-dir"
+
+## atuin group
 
 atuin.pkg-path = "atuin"
+atuin.pkg-group = "atuin"
 
-bat.pkg-path = "bat"
+bash-preexec.pkg-path = "bash-preexec"
+bash-preexec.pkg-group = "atuin"
 
-#caskaydia-cove.pkg-path = "nerd-fonts.caskaydia-cove"
-#caskaydia-cove.pkg-group = "nerd-fonts.caskaydia-cove"
-
-claude-code.pkg-path = "claude-code"
-
-crossplane.pkg-path = "crossplane"
-
-delta.pkg-path = "delta"
-
-direnv.pkg-path = "direnv"
-
-fd.pkg-path = "fd"
-
-gemini-cli.pkg-path = "gemini-cli"
-
-git.pkg-path = "git"
-
-glow.pkg-path = "glow"
-
-go.pkg-path = "go"
-
-hadolint.pkg-path = "hadolint"
-
-helm-diff.pkg-path = "kubernetes-helmPlugins.helm-diff"
-
-helm-schema.pkg-path = "kubernetes-helmPlugins.helm-schema"
-
-helm-unittest.pkg-path = "kubernetes-helmPlugins.helm-unittest"
-
-helmfile.pkg-path = "helmfile"
+## checkov group
 
 checkov.pkg-path = "checkov"
 checkov.pkg-group = "checkov"
 
-cht-sh.pkg-path = "cht-sh"
-
-k9s.pkg-path = "k9s"
-
-krew.pkg-path = "krew"
-
-kubecolor.pkg-path = "kubecolor"
+## kubectl group
 
 kubectl.pkg-path = "kubectl"
 kubectl.version = "1.32.3"
 kubectl.pkg-group = "kubectl"
-
-kubectx.pkg-path = "kubectx"
-#kubectx.pkg-group = "kubectx"
-
-kubernetes-helm.pkg-path = "kubernetes-helm"
-
-kubescape.pkg-path = "kubescape"
-
-kustomize.pkg-path = "kustomize"
-
-mkcert.pkg-path = "mkcert"
-
-nelm.pkg-path = "nelm"
-
-openbao.pkg-path = "openbao"
-
-opentofu.pkg-path = "opentofu"
-
-podman.pkg-path = "podman"
-
-pyenv.pkg-path = "pyenv"
-
-ripgrep.pkg-path = "ripgrep"
-
-ruby.pkg-path = "ruby"
-
-s3cmd.pkg-path = "s3cmd"
-
-sd.pkg-path = "sd"
-
-starship.pkg-path = "starship"
-
-stern.pkg-path = "stern"
-
-talosctl.pkg-path = "talosctl"
-
-tldr.pkg-path = "tldr"
-
-yq-go.pkg-path = "yq-go"
-
-mkdocs.pkg-path = "mkdocs"
-openshift.pkg-path = "openshift"
-
-# oc-cli => nix build = pkgs/oc-cli.nix
-# oc-cli = { inline = "import ../pkgs/oc-cli.nix {}" }
-# warp-dir
-# warp-dir = { inline = "import ../pkgs/warp-dir/warp-dir.nix {}" }
 
 ## Environment Variables ---------------------------------------------
 ##  ... available for use in the activated environment
@@ -152,13 +116,15 @@ alias terraform=opentofu
 eval "$(starship init bash)"
 eval "$(direnv hook bash)"
 eval "$(pyenv init - bash)"
+
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash --disable-up-arrow)"
-if [ -x "$(command -v warp-dir)" ] && [ ! -d "$HOME/.warp-dir" ]; then
-    echo "⚡ Initializing warp-dir configuration..."
-    # Explicitly targeting bash_profile as requested
-    warp-dir install --dotfile ~/.bash_profile
-    source ~/.bash_profile
+
+if [ ! -f ~/.bash_wd_source ]; then
+  touch ~/.bash_wd_source
+  warp-dir install --dotfile ~/.bash_wd_source
 fi
+source ~/.bash_wd_source
 """
 ## Shell-specific customizations such as setting aliases go here:
 # bash = ...
@@ -205,12 +171,12 @@ command = """
 ## Other Environment Options -----------------------------------------
 [options]
 # Systems that environment is compatible with
-# systems = [
+systems = [
 #   "aarch64-darwin",
 #   "aarch64-linux",
 #   "x86_64-darwin",
-#   "x86_64-linux",
-# ]
+  "x86_64-linux",
+]
 # Uncomment to disable CUDA detection.
 # cuda-detection = false
 

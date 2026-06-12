@@ -1,0 +1,218 @@
+schema-version = "1.12.0"
+
+
+## Install Packages --------------------------------------------------
+##  $ flox install gum  <- puts a package in [install] section below
+##  $ flox search gum   <- search for a package
+##  $ flox show gum     <- show all versions of a package
+## -------------------------------------------------------------------
+[install]
+ansible.pkg-path = "ansible"
+
+argocd.pkg-path = "argocd"
+
+atuin.pkg-path = "atuin"
+
+bat.pkg-path = "bat"
+
+#caskaydia-cove.pkg-path = "nerd-fonts.caskaydia-cove"
+#caskaydia-cove.pkg-group = "nerd-fonts.caskaydia-cove"
+
+claude-code.pkg-path = "claude-code"
+
+crossplane.pkg-path = "crossplane"
+
+delta.pkg-path = "delta"
+
+direnv.pkg-path = "direnv"
+
+fd.pkg-path = "fd"
+
+gemini-cli.pkg-path = "gemini-cli"
+
+git.pkg-path = "git"
+
+glow.pkg-path = "glow"
+
+go.pkg-path = "go"
+
+hadolint.pkg-path = "hadolint"
+
+helm-diff.pkg-path = "kubernetes-helmPlugins.helm-diff"
+
+helm-schema.pkg-path = "kubernetes-helmPlugins.helm-schema"
+
+helm-unittest.pkg-path = "kubernetes-helmPlugins.helm-unittest"
+
+helmfile.pkg-path = "helmfile"
+
+checkov.pkg-path = "checkov"
+checkov.pkg-group = "checkov"
+
+cht-sh.pkg-path = "cht-sh"
+
+k9s.pkg-path = "k9s"
+
+krew.pkg-path = "krew"
+
+kubecolor.pkg-path = "kubecolor"
+
+kubectl.pkg-path = "kubectl"
+kubectl.version = "1.32.3"
+kubectl.pkg-group = "kubectl"
+
+kubectx.pkg-path = "kubectx"
+#kubectx.pkg-group = "kubectx"
+
+kubernetes-helm.pkg-path = "kubernetes-helm"
+
+kubescape.pkg-path = "kubescape"
+
+kustomize.pkg-path = "kustomize"
+
+mkcert.pkg-path = "mkcert"
+
+nelm.pkg-path = "nelm"
+
+openbao.pkg-path = "openbao"
+
+opentofu.pkg-path = "opentofu"
+
+podman.pkg-path = "podman"
+
+pyenv.pkg-path = "pyenv"
+
+ripgrep.pkg-path = "ripgrep"
+
+ruby.pkg-path = "ruby"
+
+s3cmd.pkg-path = "s3cmd"
+
+sd.pkg-path = "sd"
+
+starship.pkg-path = "starship"
+
+stern.pkg-path = "stern"
+
+talosctl.pkg-path = "talosctl"
+
+tldr.pkg-path = "tldr"
+
+yq-go.pkg-path = "yq-go"
+
+mkdocs.pkg-path = "mkdocs"
+openshift.pkg-path = "openshift"
+
+# oc-cli => nix build = pkgs/oc-cli.nix
+# oc-cli = { inline = "import ../pkgs/oc-cli.nix {}" }
+# warp-dir
+# warp-dir = { inline = "import ../pkgs/warp-dir/warp-dir.nix {}" }
+
+## Environment Variables ---------------------------------------------
+##  ... available for use in the activated environment
+##      as well as [hook], [profile] scripts and [services] below.
+## -------------------------------------------------------------------
+[vars]
+# INTRO_MESSAGE = "It's gettin' Flox in here"
+STARSHIP_CONFIG = "$FLOX_ENV_PROJECT/starship.toml"
+FLOX_PROMPT_DISABLE = "1"
+
+## Activation Hook ---------------------------------------------------
+##  ... run by _bash_ shell when you run 'flox activate'.
+## -------------------------------------------------------------------
+[hook]
+#on-activate = '''
+#   # -> Set variables, create files and directories
+#   # -> Perform initialization steps, e.g. create a python venv
+#   # -> Useful environment variables:
+#   #      - FLOX_ENV_PROJECT=/home/user/example
+#   #      - FLOX_ENV=/home/user/example/.flox/run
+#   #      - FLOX_ENV_CACHE=/home/user/example/.flox/cache
+#export PATH="$PWD/.local/bin/:$PATH"
+#'''
+
+## Profile script ----------------------------------------------------
+## ... sourced by _your shell_ when you run 'flox activate'.
+## -------------------------------------------------------------------
+[profile]
+# common = '''
+#   gum style \
+#   --foreground 212 --border-foreground 212 --border double \
+#   --align center --width 50 --margin "1 2" --padding "2 4" \
+#     $INTRO_MESSAGE
+# '''
+
+common = """
+git config --global user.name "Peter Štefka"
+git config --global user.email "peter.stefka@aspecta.sk"
+
+alias vault=openbao
+alias terraform=opentofu
+
+eval "$(starship init bash)"
+eval "$(direnv hook bash)"
+eval "$(pyenv init - bash)"
+eval "$(atuin init bash --disable-up-arrow)"
+if [ -x "$(command -v warp-dir)" ] && [ ! -d "$HOME/.warp-dir" ]; then
+    echo "⚡ Initializing warp-dir configuration..."
+    # Explicitly targeting bash_profile as requested
+    warp-dir install --dotfile ~/.bash_profile
+    source ~/.bash_profile
+fi
+"""
+## Shell-specific customizations such as setting aliases go here:
+# bash = ...
+# zsh  = ...
+# fish = ...
+
+
+## Services ---------------------------------------------------------
+##  $ flox services start             <- Starts all services
+##  $ flox services status            <- Status of running services
+##  $ flox activate --start-services  <- Activates & starts all
+## ------------------------------------------------------------------
+[services]
+# myservice.command = "python3 -m http.server"
+
+
+## Include ----------------------------------------------------------
+## ... environments to create a composed environment
+## ------------------------------------------------------------------
+[include]
+# environments = [
+#     { dir = "../common" }
+# ]
+
+
+## Build and publish your own packages ------------------------------
+##  $ flox build
+##  $ flox publish
+## ------------------------------------------------------------------
+[build]
+
+[build.warp-dir]
+description = "https://github.com/kigster/warp-dir#installation"
+version = "0.0.2"
+command = """
+  export GEM_HOME="$out/lib/ruby/gems"
+
+  mkdir -p $GEM_HOME
+  mkdir -p $out/bin
+  # Install the gem directly into the output directory
+  gem install warp-dir --no-document --install-dir "$GEM_HOME" --bindir "$out/bin"
+  """
+
+## Other Environment Options -----------------------------------------
+[options]
+# Systems that environment is compatible with
+# systems = [
+#   "aarch64-darwin",
+#   "aarch64-linux",
+#   "x86_64-darwin",
+#   "x86_64-linux",
+# ]
+# Uncomment to disable CUDA detection.
+# cuda-detection = false
+
+[options.activate]
+mode = "run"

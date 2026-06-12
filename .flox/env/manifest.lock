@@ -13,12 +13,12 @@
         "pkg-path": "atuin",
         "pkg-group": "atuin"
       },
-      "bash-preexec": {
-        "pkg-path": "bash-preexec",
-        "pkg-group": "atuin"
-      },
       "bat": {
         "pkg-path": "bat"
+      },
+      "blesh": {
+        "pkg-path": "blesh",
+        "pkg-group": "atuin"
       },
       "checkov": {
         "pkg-path": "checkov",
@@ -48,11 +48,18 @@
       "git": {
         "pkg-path": "git"
       },
+      "git-crypt": {
+        "pkg-path": "git-crypt"
+      },
       "glow": {
         "pkg-path": "glow"
       },
       "go": {
         "pkg-path": "go"
+      },
+      "goose-cli": {
+        "pkg-path": "flox/goose-cli",
+        "pkg-group": "goose-cli"
       },
       "hadolint": {
         "pkg-path": "hadolint"
@@ -68,6 +75,10 @@
       },
       "helmfile": {
         "pkg-path": "helmfile"
+      },
+      "hermes-agent": {
+        "pkg-path": "flox/hermes-agent",
+        "pkg-group": "hermes-agent"
       },
       "k9s": {
         "pkg-path": "k9s"
@@ -116,6 +127,9 @@
       "podman": {
         "pkg-path": "podman"
       },
+      "poetry": {
+        "pkg-path": "poetry"
+      },
       "pyenv": {
         "pkg-path": "pyenv"
       },
@@ -156,7 +170,7 @@
     },
     "hook": {},
     "profile": {
-      "common": "git config --global user.name \"Peter Štefka\"\ngit config --global user.email \"peter.stefka@aspecta.sk\"\n\nalias vault=openbao\nalias terraform=opentofu\n\neval \"$(starship init bash)\"\neval \"$(direnv hook bash)\"\neval \"$(pyenv init - bash)\"\n\n[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh\neval \"$(atuin init bash --disable-up-arrow)\"\n\nif [ ! -f ~/.bash_wd_source ]; then\n  touch ~/.bash_wd_source\n  warp-dir install --dotfile ~/.bash_wd_source\nfi\nsource ~/.bash_wd_source\n"
+      "common": "git config --global user.name \"Peter Štefka\"\ngit config --global user.email \"peter.stefka@aspecta.sk\"\n\nalias vault=openbao\nalias terraform=opentofu\nalias cat=\"bat -p\"\n\neval \"$(starship init bash)\"\neval \"$(direnv hook bash)\"\neval \"$(pyenv init - bash)\"\n\nexport DELTA_FEATURES=+side-by-side # activate\ngit config --global core.pager delta\ngit config --global interactive.diffFilter 'delta --color-only'\ngit config --global delta.navigate true\ngit config --global delta.dark true  # or `delta.light true`, or omit for auto-detection\ngit config --global merge.conflictStyle zdiff3\n\n# [[ $- == *i* ]] && _ble_base_run=\"${XDG_RUNTIME_DIR:-/tmp}/blesh-run-$(id -un)\" _ble_base_cache=\"${XDG_CACHE_HOME:-$HOME/.cache}/blesh\" source -- \"$(blesh-share)/ble.sh\" --attach=none\nif [ ! -f ~/.blerc ]; then\n  cat <<EOF > ~/.blerc\n#_ble_base_run=\"${XDG_RUNTIME_DIR:-/tmp}/blesh-run-$(id -u)\"\n#_ble_base_cache=\"${XDG_CACHE_HOME:-$HOME/.cache}/blesh\"\nEOF\nfi\n\n[[ $- == *i* ]] && source -- \"$(blesh-share)/ble.sh\" --attach=none\n# if atuin sync not initialized, login, import, sync\neval \"$(atuin init bash --disable-up-arrow)\"\nif ! atuin login -u pstefka -p foo -k bar >/dev/null; then\n  atuin login -u pstefka\n  atuin import bash\n  atuin sync\nfi\n[[ ! ${BLE_VERSION-} ]] || ble-attach\n\nif [ ! -f ~/.bash_wd_source ]; then\n  touch ~/.bash_wd_source\n  warp-dir install --dotfile ~/.bash_wd_source\nfi\nsource ~/.bash_wd_source\n"
     },
     "options": {
       "systems": [
@@ -195,6 +209,7 @@
       "unfree": false,
       "version": "18.16.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -205,29 +220,29 @@
       "priority": 5
     },
     {
-      "attr_path": "bash-preexec",
+      "attr_path": "blesh",
       "broken": false,
-      "derivation": "/nix/store/cb27zvfmyizwjy7hl5gsvn84361hpmr2-bash-preexec-0.6.0.drv",
-      "description": "Preexec and precmd functions for Bash just like Zsh",
-      "install_id": "bash-preexec",
-      "license": "MIT",
+      "derivation": "/nix/store/4sn5mkqbirgiwswkl7vjprjk3hy2lqnm-blesh-0.4.0-devel3-unstable-2026-03-10.drv",
+      "description": "Bash Line Editor -- a full-featured line editor written in pure Bash",
+      "install_id": "blesh",
+      "license": "BSD-3-Clause",
       "locked_url": "https://github.com/flox/nixpkgs?rev=9ae611a455b90cf061d8f332b977e387bda8e1ca",
-      "name": "bash-preexec-0.6.0",
-      "pname": "bash-preexec",
+      "name": "blesh-0.4.0-devel3-unstable-2026-03-10",
+      "pname": "blesh",
       "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
       "rev_count": 1014179,
       "rev_date": "2026-06-10T06:56:03Z",
-      "scrape_date": "2026-06-12T04:47:35.355118Z",
+      "scrape_date": "2026-06-12T04:47:35.427487Z",
       "stabilities": [
         "unstable"
       ],
       "unfree": false,
-      "version": "0.6.0",
+      "version": "2026-03-10",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/clw2ydn6bjjgmcnyc3zj4l2paaas2k1r-bash-preexec-0.6.0"
+        "out": "/nix/store/114v0nnkljag4a82sj0v86kqihyqgq9m-blesh-0.4.0-devel3-unstable-2026-03-10"
       },
       "system": "x86_64-linux",
       "group": "atuin",
@@ -262,6 +277,66 @@
       },
       "system": "x86_64-linux",
       "group": "checkov",
+      "priority": 5
+    },
+    {
+      "attr_path": "goose-cli",
+      "broken": false,
+      "derivation": "/nix/store/hv5svsaxqx7y8r1i6h7548n07wdairix-goose-cli-1.37.0.drv",
+      "description": "Block's local, extensible, open source AI engineering agent",
+      "install_id": "goose-cli",
+      "license": "Apache-2.0",
+      "locked_url": "https://github.com/flox/floxenvs?rev=aa7d280fa1971d871fcba1265a425ce79c8af4f3",
+      "name": "goose-cli-1.37.0",
+      "pname": "goose-cli",
+      "rev": "aa7d280fa1971d871fcba1265a425ce79c8af4f3",
+      "rev_count": 6007,
+      "rev_date": "2026-06-03T20:57:57Z",
+      "scrape_date": "2026-06-12T10:40:38.414093519Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.37.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/lag712g59wnqz1v3wy20fh55rnax5dwb-goose-cli-1.37.0"
+      },
+      "system": "x86_64-linux",
+      "group": "goose-cli",
+      "priority": 5
+    },
+    {
+      "attr_path": "hermes-agent",
+      "broken": false,
+      "derivation": "/nix/store/qvlxzar2bykhigbyclm2vabrncg4bh7l-hermes-agent-env.drv",
+      "description": "Self-improving AI agent from Nous Research",
+      "install_id": "hermes-agent",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/floxenvs?rev=5163f1b838d5e6cba01e8240aeb1bab03a9e3dae",
+      "name": "hermes-agent-env",
+      "pname": "hermes-agent",
+      "rev": "5163f1b838d5e6cba01e8240aeb1bab03a9e3dae",
+      "rev_count": 6457,
+      "rev_date": "2026-06-06T01:51:30Z",
+      "scrape_date": "2026-06-12T10:41:19.963460955Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2026.6.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/v709yq93x1rl6gh98pnrnvar7zm8d2x0-hermes-agent-env"
+      },
+      "system": "x86_64-linux",
+      "group": "hermes-agent",
       "priority": 5
     },
     {
@@ -317,6 +392,7 @@
       "unfree": false,
       "version": "2.21.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -347,6 +423,7 @@
       "unfree": false,
       "version": "3.3.6",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -376,6 +453,7 @@
       "unfree": false,
       "version": "0.26.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -405,6 +483,7 @@
       "unfree": false,
       "version": "2025-12-23",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -434,6 +513,7 @@
       "unfree": true,
       "version": "2.1.161",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -463,6 +543,7 @@
       "unfree": false,
       "version": "0.5.8",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -493,6 +574,7 @@
       "unfree": false,
       "version": "0.19.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -522,6 +604,7 @@
       "unfree": false,
       "version": "2.37.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -551,6 +634,7 @@
       "unfree": false,
       "version": "10.4.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -580,6 +664,7 @@
       "unfree": false,
       "version": "0.43.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -611,12 +696,42 @@
       "outputs_to_install": [
         "out",
         "out",
+        "out",
         "out"
       ],
       "outputs": {
         "debug": "/nix/store/72fyakk8w8idjbksk0h8jbkq6sgvcm85-git-2.54.0-debug",
         "doc": "/nix/store/l444690y78nfdwyzm6mghagl7xa97myf-git-2.54.0-doc",
         "out": "/nix/store/bcnisk3ydfgv26v2gw3zlky24g00yww2-git-2.54.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "git-crypt",
+      "broken": false,
+      "derivation": "/nix/store/apn62z31jli5vvkr1w1f5i4dchl57fp5-git-crypt-0.8.0.drv",
+      "description": "Transparent file encryption in git",
+      "install_id": "git-crypt",
+      "license": "GPL-3.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=a799d3e3886da994fa307f817a6bc705ae538eeb",
+      "name": "git-crypt-0.8.0",
+      "pname": "git-crypt",
+      "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+      "rev_count": 1011622,
+      "rev_date": "2026-06-06T12:30:50Z",
+      "scrape_date": "2026-06-08T04:53:16.354343Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.8.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/sd0xi3b0xqq2s1k3j5zm45zm02bpgf0g-git-crypt-0.8.0"
       },
       "system": "x86_64-linux",
       "group": "toplevel",
@@ -642,6 +757,7 @@
       "unfree": false,
       "version": "2.1.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -671,6 +787,7 @@
       "unfree": false,
       "version": "1.26.3",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -700,6 +817,7 @@
       "unfree": false,
       "version": "2.14.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -729,6 +847,7 @@
       "unfree": false,
       "version": "3.15.7",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -758,6 +877,7 @@
       "unfree": false,
       "version": "2.4.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -787,6 +907,7 @@
       "unfree": false,
       "version": "1.1.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -816,6 +937,7 @@
       "unfree": false,
       "version": "1.5.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -845,6 +967,7 @@
       "unfree": false,
       "version": "0.50.18",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -874,6 +997,7 @@
       "unfree": false,
       "version": "0.5.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -903,6 +1027,7 @@
       "unfree": false,
       "version": "0.6.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -932,6 +1057,7 @@
       "unfree": false,
       "version": "0.11.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -961,6 +1087,7 @@
       "unfree": false,
       "version": "3.20.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -990,6 +1117,7 @@
       "unfree": false,
       "version": "4.0.9",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1019,6 +1147,7 @@
       "unfree": false,
       "version": "5.8.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1048,6 +1177,7 @@
       "unfree": false,
       "version": "1.4.4",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1077,6 +1207,7 @@
       "unfree": false,
       "version": "1.6.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1107,6 +1238,7 @@
       "unfree": false,
       "version": "1.23.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1136,6 +1268,7 @@
       "unfree": false,
       "version": "2.5.4",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1165,6 +1298,7 @@
       "unfree": false,
       "version": "4.19.0-202505210330",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1194,6 +1328,7 @@
       "unfree": false,
       "version": "1.12.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1224,11 +1359,43 @@
       "version": "5.8.2",
       "outputs_to_install": [
         "man",
+        "man",
+        "out",
         "out"
       ],
       "outputs": {
         "man": "/nix/store/qz35drwzcvjly6xq6q376384fh70rccp-podman-5.8.2-man",
         "out": "/nix/store/346cpf6046m6m9a18aapninkpvfhf46y-podman-5.8.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "poetry",
+      "broken": false,
+      "derivation": "/nix/store/7sl638pz3s7p21crhyz249hkpsiq0c9g-python3.13-poetry-2.4.1.drv",
+      "description": "Python dependency management and packaging made easy",
+      "install_id": "poetry",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=a799d3e3886da994fa307f817a6bc705ae538eeb",
+      "name": "poetry-2.4.1",
+      "pname": "poetry",
+      "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+      "rev_count": 1011622,
+      "rev_date": "2026-06-06T12:30:50Z",
+      "scrape_date": "2026-06-08T04:54:20.234847Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.4.1",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "dist": "/nix/store/vd4hx5xwrw6zsdb3jlv9av5mzxs8gsqv-python3.13-poetry-2.4.1-dist",
+        "out": "/nix/store/lsm19pm7zsd2gyklr9658x05q8h7nlyv-python3.13-poetry-2.4.1"
       },
       "system": "x86_64-linux",
       "group": "toplevel",
@@ -1254,6 +1421,7 @@
       "unfree": false,
       "version": "2.6.31",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1283,6 +1451,7 @@
       "unfree": false,
       "version": "15.1.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1312,6 +1481,7 @@
       "unfree": false,
       "version": "3.4.9",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1342,6 +1512,7 @@
       "unfree": false,
       "version": "2.4.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1372,6 +1543,7 @@
       "unfree": false,
       "version": "1.1.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1401,6 +1573,7 @@
       "unfree": false,
       "version": "1.25.1",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1430,6 +1603,7 @@
       "unfree": false,
       "version": "1.34.0",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1459,6 +1633,7 @@
       "unfree": false,
       "version": "1.13.3",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1488,6 +1663,7 @@
       "unfree": false,
       "version": "3.4.4",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -1509,7 +1685,7 @@
       "rev": "8de386b0360defbed6c8cbbd34179b8dc94c5d98",
       "rev_count": 1,
       "rev_date": "2026-06-12T07:35:33Z",
-      "scrape_date": "2026-06-12T09:08:45.347579505Z",
+      "scrape_date": "2026-06-12T10:43:04.652944447Z",
       "stabilities": [
         "unstable"
       ],
@@ -1544,6 +1720,7 @@
       "unfree": false,
       "version": "4.53.2",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {

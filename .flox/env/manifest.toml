@@ -7,6 +7,26 @@ schema-version = "1.12.0"
 ##  $ flox show gum     <- show all versions of a package
 ## -------------------------------------------------------------------
 [install]
+## atuin group
+
+# atuin alternativy mcfly
+atuin.pkg-path = "atuin"
+atuin.pkg-group = "atuin"
+
+blesh.pkg-path = "blesh"
+blesh.pkg-group = "atuin"
+
+## checkov group
+
+checkov.pkg-path = "checkov"
+checkov.pkg-group = "checkov"
+
+## kubectl group
+
+kubectl.pkg-path = "kubectl"
+kubectl.version = "1.32.3"
+kubectl.pkg-group = "kubectl"
+
 ## default pkg-group
 ansible.pkg-path = "ansible"
 argocd.pkg-path = "argocd"
@@ -19,6 +39,7 @@ direnv.pkg-path = "direnv"
 fd.pkg-path = "fd"
 gemini-cli.pkg-path = "gemini-cli"
 git.pkg-path = "git"
+git-crypt.pkg-path = "git-crypt"
 glow.pkg-path = "glow"
 go.pkg-path = "go"
 hadolint.pkg-path = "hadolint"
@@ -41,6 +62,7 @@ openbao.pkg-path = "openbao"
 openshift.pkg-path = "openshift"
 opentofu.pkg-path = "opentofu"
 podman.pkg-path = "podman"
+poetry.pkg-path = "poetry"
 pyenv.pkg-path = "pyenv"
 ripgrep.pkg-path = "ripgrep"
 ruby.pkg-path = "ruby"
@@ -52,25 +74,10 @@ talosctl.pkg-path = "talosctl"
 tldr.pkg-path = "tldr"
 yq-go.pkg-path = "yq-go"
 warp-dir.pkg-path = "pstefka/warp-dir"
-
-## atuin group
-
-atuin.pkg-path = "atuin"
-atuin.pkg-group = "atuin"
-
-bash-preexec.pkg-path = "bash-preexec"
-bash-preexec.pkg-group = "atuin"
-
-## checkov group
-
-checkov.pkg-path = "checkov"
-checkov.pkg-group = "checkov"
-
-## kubectl group
-
-kubectl.pkg-path = "kubectl"
-kubectl.version = "1.32.3"
-kubectl.pkg-group = "kubectl"
+goose-cli.pkg-path = "flox/goose-cli"
+goose-cli.pkg-group = "goose-cli"
+hermes-agent.pkg-path = "flox/hermes-agent"
+hermes-agent.pkg-group = "hermes-agent"
 
 ## Environment Variables ---------------------------------------------
 ##  ... available for use in the activated environment
@@ -112,13 +119,36 @@ git config --global user.email "peter.stefka@aspecta.sk"
 
 alias vault=openbao
 alias terraform=opentofu
+alias cat="bat -p"
 
 eval "$(starship init bash)"
 eval "$(direnv hook bash)"
 eval "$(pyenv init - bash)"
 
-[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+export DELTA_FEATURES=+side-by-side # activate
+git config --global core.pager delta
+git config --global interactive.diffFilter 'delta --color-only'
+git config --global delta.navigate true
+git config --global delta.dark true  # or `delta.light true`, or omit for auto-detection
+git config --global merge.conflictStyle zdiff3
+
+# [[ $- == *i* ]] && _ble_base_run="${XDG_RUNTIME_DIR:-/tmp}/blesh-run-$(id -un)" _ble_base_cache="${XDG_CACHE_HOME:-$HOME/.cache}/blesh" source -- "$(blesh-share)/ble.sh" --attach=none
+if [ ! -f ~/.blerc ]; then
+  cat <<EOF > ~/.blerc
+#_ble_base_run="${XDG_RUNTIME_DIR:-/tmp}/blesh-run-$(id -u)"
+#_ble_base_cache="${XDG_CACHE_HOME:-$HOME/.cache}/blesh"
+EOF
+fi
+
+[[ $- == *i* ]] && source -- "$(blesh-share)/ble.sh" --attach=none
+# if atuin sync not initialized, login, import, sync
 eval "$(atuin init bash --disable-up-arrow)"
+if ! atuin login -u pstefka -p foo -k bar >/dev/null; then
+  atuin login -u pstefka
+  atuin import bash
+  atuin sync
+fi
+[[ ! ${BLE_VERSION-} ]] || ble-attach
 
 if [ ! -f ~/.bash_wd_source ]; then
   touch ~/.bash_wd_source

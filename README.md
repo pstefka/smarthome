@@ -232,6 +232,9 @@ flowchart TD
 [] Redis sync for Blocky  
 [] Enable SSO for all services / secure API services 
 [] Migration to [Homepage](https://github.com/gethomepage/homepage) ? Currently Uptime Kuma integration requires status pages setup 🤦‍♂️  
+[] [Caddy + Coraza  + Socfortress](https://github.com/socfortress/waf-platform-public)
+[] Thalos migration ?
+[] User [Seerr](https://seerr.dev/)
 [] [Zero toil](./zero-toil.md)  
 [] Certs for appliance frontends using [scripts](./scripts/)  
 [] k3s ?  

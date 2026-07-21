@@ -1,0 +1,9 @@
+defaultSettings:
+  defaultDataPath: /var/mnt/longhorn
+
+
+ingress:
+  enabled: true
+  host: longhorn.budabuda-k8s.duckdns.org
+  #tls: true
+  #tlsSecret: longhorn-ingress-tls

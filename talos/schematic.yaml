@@ -4,6 +4,7 @@ customization:
             - siderolabs/iscsi-tools
             - siderolabs/netbird
             - siderolabs/nfs-utils
+            - siderolabs/util-linux-tools
             - siderolabs/qemu-guest-agent
             - siderolabs/usb-audio-drivers
     # bootloader: dual-boot # dual boot

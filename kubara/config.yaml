@@ -1,0 +1,73 @@
+version: v1alpha3
+clusters:
+  - name: smarhome
+    stage: lab
+    type: hub
+    dnsName: budabuda-talos.duckdns.org
+    ssoOrg: none
+    ssoTeam: none
+    ingressClassName: traefik
+    #terraform:
+    #  provider: none
+    #  projectId: <project-id>
+    #  kubernetesType: <edge, ske or cce>
+    #  kubernetesVersion: "1.34"
+    #  dns:
+    #    name: <subdomain.my-domain.com>
+    #    email: my-test@nowhere.com
+    argocd:
+      repo:
+        https:
+          configs:
+            url: https://github.com/pstefka/smarthome/tree/kubara
+            targetRevision: main
+          components:
+            url: https://github.com/pstefka/smarthome/tree/kubara
+            targetRevision: main
+      helmRepo:
+        url: https://github.com/pstefka/smarthome/tree/kubara
+    services:
+      argocd:
+        status: disabled
+      cert-manager:
+        status: enabled
+        config:
+          clusterIssuer:
+            email: www.stefi@gmail.com
+            name: letsencrypt-staging
+            server: https://acme-staging-v02.api.letsencrypt.org/directory
+      external-dns:
+        status: disabled
+      external-secrets:
+        status: enabled
+      homer-dashboard:
+        status: enabled
+      kube-prometheus-stack:
+        status: disabled
+      kyverno:
+        status: enabled
+      kyverno-policies:
+        status: enabled
+      kyverno-policy-reporter:
+        status: enabled
+      loki:
+        status: disabled
+      longhorn:
+        status: enabled
+      metallb:
+        status: enabled
+      metrics-server:
+        status: enabled
+      oauth2-proxy:
+        status: enabled
+      reloader:
+        status: enabled
+      traefik:
+        status: enabled
+      velero:
+        status: enabled
+        config:
+          backupMode: fs-backup
+          backupStorage:
+            create: false
+            # region: eu01

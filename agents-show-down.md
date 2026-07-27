@@ -56,3 +56,69 @@ Ruflo
 <https://github.com/mattpocock/skills>
 <https://github.com/ruvnet/ruflo>
 [Oh My OpenAgent](https://omo.dev) / <https://github.com/alvinunreal/oh-my-opencode-slim/>
+
+## Info
+
+<opencode -s ses_05a8f8600ffe8yaXRRPUlxEQFg>
+
+The goal is to rework my home lab and learn some thing in between.
+
+Current setup:
+
+- flat /24 network
+- 2 nodes
+  - nuc 4CPU + 16GB RAM + 100GB storage
+  - n100 4CPU + 16GB RAM + 1TB storage
+    - runs Proxmox
+      - HAOS appliance = to be kept!
+- OLD Synology NAS
+  - HDD backup
+  - provides nfs / samba shares like pictures, music, videos
+
+Many services run as docker compose on both nuc and n100, with local storage only, e.g.
+
+- Netbird.io (connectivity)
+- Blocky (DNS)
+  - runs on nuc and n100 with a keepalived vip inbetween
+- Uptime Kuma (monitoring)
+- Duplicati (backup to Synology)
+  - great incremental backup
+  - great retention policies
+- Mosquitto
+- Music Assistant + squeezelight (with USB DAC)
+- *arr suite
+- Authelia (SSO)
+- Caddy (reverse proxy)
+  - Let's Encrypt certificates using duckdns.org
+- Sablier (scale to zero)
+- Paperless NG (documents)
+- Watchtower (automatic upgrades * risks slightly mitigated using Kuma monitors)
+
+Would like to create a near zero toil setup. Like to upgrade the setup to:
+
+- be able balance workloads between hardware nodes (including storage)
+- infrastructure as code (prefer OpenTofu)
+  - including Talos, e.g. silvemerson/talos-linux-cluster/proxmox
+- running all workloads (except Haos) in k8s (was thinking about using Talos)
+- would like to use Cilium
+- prefer GitOps (have experience with ArgoCD)
+  - targeting github.com
+  - secrets to be encrypted
+- migrate docker compose to k8s
+  - helm charts / kustomize seem a bit superfluous => 1 cluster only
+- to a better working scale to zero solution
+- automated creation / recovery < 30 minutes
+- extend Proxmox to nuc = excelent backup capabilities, and can be easily provisioned using IaC
+
+Was thinking:
+
+- USB DAC (squeezelight) try k8s way, if doesn't work fallback to a systemd service
+- using Longhorn with 1 replica for persistent storage + backup to NAS
+  - prefer it's backup if feature set to Duplicati is same
+- using Traefik as ingress controller, because Caddy IC is WIP
+  - maybe use a Gateway API alternative?
+- changing the DNS provider from duckdns.org = no custom domain, free tier
+- all secrets should be stored encrypted in git => use SOPS + age?
+
+While a homelab setup, should be load balanced, backed up, monitored, secure, disaster recoverable, documented day2 operations .. and should fit to the hardware on hand (no expansion planned)!
+

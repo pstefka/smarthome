@@ -65,15 +65,15 @@ The goal is to rework my home lab and learn some thing in between.
 
 Current setup:
 
-- flat /24 network
+- flat network, 192.168.1.201-229/24 to be used
 - 2 nodes
   - nuc 4CPU + 16GB RAM + 100GB storage
   - n100 4CPU + 16GB RAM + 1TB storage
     - runs Proxmox
       - HAOS appliance = to be kept!
 - OLD Synology NAS
-  - HDD backup
-  - provides nfs / samba shares like pictures, music, videos
+  - HDD based
+  - provides nfs / samba shares like pictures, music, videos and backup
 
 Many services run as docker compose on both nuc and n100, with local storage only, e.g.
 
@@ -99,16 +99,19 @@ Would like to create a near zero toil setup. Like to upgrade the setup to:
 - be able balance workloads between hardware nodes (including storage)
 - infrastructure as code (prefer OpenTofu)
   - including Talos, e.g. silvemerson/talos-linux-cluster/proxmox
+  - including HAOS appliance installation
 - running all workloads (except Haos) in k8s (was thinking about using Talos)
+  - for Talos add required extensions, e.g. iscsi-tools, netbird, nfs-utils, qemu-guest-agent, and usb-audio-drivers (list needs to be revisited)
 - would like to use Cilium
 - prefer GitOps (have experience with ArgoCD)
   - targeting github.com
-  - secrets to be encrypted
+  - secrets to be encrypted (bootstrap via TUI input)
 - migrate docker compose to k8s
   - helm charts / kustomize seem a bit superfluous => 1 cluster only
-- to a better working scale to zero solution
+- to a better working scale to zero solution - if HPA is GA, prefer over KEDA
 - automated creation / recovery < 30 minutes
 - extend Proxmox to nuc = excelent backup capabilities, and can be easily provisioned using IaC
+HPA- use cert manager with duckdns.org and let's encrypt
 
 Was thinking:
 
@@ -119,6 +122,11 @@ Was thinking:
   - maybe use a Gateway API alternative?
 - changing the DNS provider from duckdns.org = no custom domain, free tier
 - all secrets should be stored encrypted in git => use SOPS + age?
+- netbird might run as Talos extension or K8s workload (managed via gitops)
+  - not sure which one is preferred, state differences and recommend
+  - 
 
 While a homelab setup, should be load balanced, backed up, monitored, secure, disaster recoverable, documented day2 operations .. and should fit to the hardware on hand (no expansion planned)!
+
+Prepare a migration process to migrate docker compose services (with configuration on filesystem, and local storage) to k8s.
 

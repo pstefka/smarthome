@@ -1,0 +1,128 @@
+# KEDA ScaledObjects for scale-to-zero services
+# Schedule-based: scale up during evening hours, scale to zero at night
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: music-assistant
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: music-assistant
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 17 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: ombi
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: ombi
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 18 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: metube
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: metube
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 18 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: sshwifty
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: sshwifty
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 18 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: paperless
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: paperless
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 8 * * *"
+        end: "0 22 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: sonarr
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: sonarr
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 18 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: radarr
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: radarr
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Bratislava
+        start: "0 18 * * *"
+        end: "0 23 * * *"
+        desiredReplicas: "1"

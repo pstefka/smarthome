@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: keda
+  labels:
+    app.kubernetes.io/part-of: budabuda-k8s
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: keda
+  namespace: keda
+spec:
+  interval: 24h
+  url: https://kedacore.github.io/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keda
+  namespace: keda
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: keda
+      version: 2.16.1 # Check for latest
+      sourceRef:
+        kind: HelmRepository
+        name: keda
+        namespace: keda
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    # Webhook scaler for scale-to-zero
+    webhooks:
+      enabled: true
+
+    # Operator resources
+    operator:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+
+    # Metrics server
+    metricsServer:
+      enabled: true
+
+    # Prometheus (disabled — no kube-prometheus-stack)
+    prometheus:
+      enabled: false

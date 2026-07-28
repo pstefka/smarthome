@@ -1,0 +1,97 @@
+# Blocky DNS — LoadBalancer Service (NOT Gateway API)
+# Cilium does NOT support TCPRoute. Blocky uses port 53 TCP+UDP.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: networking
+  labels:
+    app.kubernetes.io/part-of: budabuda-k8s
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blocky-config
+  namespace: networking
+data:
+  config.yml: |
+    ports:
+      dns: 53
+      http: 4000
+    upstreams:
+      - 1.1.1.1
+      - 8.8.8.8
+    blocking:
+      denylists:
+        ads:
+          - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+      clientGroupsBlock:
+        default:
+          - ads
+    caching:
+      minCachingTime: 5m
+      maxItems: 10000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blocky
+  namespace: networking
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: blocky
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: blocky
+    spec:
+      containers:
+        - name: blocky
+          image: spx01/blocky:latest
+          ports:
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.yml
+              subPath: config.yml
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: blocky-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blocky
+  namespace: networking
+  annotations:
+    io.cilium/lb-ipam-ips: "192.168.1.201"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: dns-tcp
+      port: 53
+      protocol: TCP
+      targetPort: dns-tcp
+    - name: dns-udp
+      port: 53
+      protocol: UDP
+      targetPort: dns-udp
+  selector:
+    app.kubernetes.io/name: blocky

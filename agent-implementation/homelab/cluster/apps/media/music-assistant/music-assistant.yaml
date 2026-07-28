@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-assistant
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: music-assistant
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: music-assistant
+    spec:
+      containers:
+        - name: music-assistant
+          image: ghcr.io/music-assistant/server:stable
+          ports:
+            - name: http
+              containerPort: 8095
+          env:
+            - name: TZ
+              value: "Europe/Bratislava"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: music-assistant-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: music-assistant-data
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: music-assistant
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: music-assistant
+---
+# Music Assistant communicates with HA via WebSocket
+# No ExternalAuth needed — internal HA integration

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: glances
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: glances
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: glances
+    spec:
+      hostPID: true
+      hostNetwork: true
+      containers:
+        - name: glances
+          image: nicolargo/glances:latest-full
+          ports:
+            - name: http
+              containerPort: 61208
+          env:
+            - name: GLANCES_OPT
+              value: "-w -B 0.0.0.0"
+          volumeMounts:
+            - name: config
+              mountPath: /glances/conf
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glances
+  namespace: monitoring
+  annotations:
+    io.cilium/lb-ipam-ips: "192.168.1.204"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      port: 61208
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: glances

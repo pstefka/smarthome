@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: networking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mosquitto
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mosquitto
+    spec:
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:latest
+          ports:
+            - name: mqtt
+              containerPort: 1883
+            - name: websocket
+              containerPort: 9001
+          volumeMounts:
+            - name: config
+              mountPath: /mosquitto/config
+            - name: data
+              mountPath: /mosquitto/data
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: config
+          configMap:
+            name: mosquitto-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: mosquitto-data
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace: networking
+data:
+  mosquitto.conf: |
+    listener 1883
+    listener 9001
+    protocol websockets
+    allow_anonymous true
+    persistence true
+    persistence_location /mosquitto/data/
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-data
+  namespace: networking
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: networking
+spec:
+  type: ClusterIP
+  ports:
+    - name: mqtt
+      port: 1883
+      targetPort: mqtt
+    - name: websocket
+      port: 9001
+      targetPort: websocket
+  selector:
+    app.kubernetes.io/name: mosquitto

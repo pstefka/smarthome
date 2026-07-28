@@ -1,0 +1,28 @@
+# OpenTofu
+tofu/providers/.terraform/
+tofu/providers/tfplan
+tofu/providers/*.tfstate
+tofu/providers/*.tfstate.backup
+tofu/providers/.terraform.lock.hcl
+
+# Talos
+talosconfig
+*.kubeconfig
+
+# Secrets (unencrypted)
+secrets/*.yaml
+!secrets/*.enc.yaml
+!secrets/.gitignore
+
+# SOPS
+*.agekey
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/

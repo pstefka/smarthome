@@ -1,0 +1,124 @@
+# Core infrastructure — deployed first (sync-wave: 1)
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: core-infra
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  generators:
+    - list:
+        elements:
+          - name: cilium
+            path: base/cilium
+          - name: longhorn
+            path: base/longhorn
+          - name: cert-manager
+            path: base/cert-manager
+          - name: argocd-self
+            path: bootstrap
+  template:
+    metadata:
+      name: "{{name}}"
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/YOUR_USERNAME/homelab.git
+        targetRevision: main
+        path: "{{path}}"
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m0s
+---
+# Applications — deployed after core infra (sync-wave: 2)
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: applications
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  generators:
+    - list:
+        elements:
+          # Networking
+          - name: authelia
+            path: apps/networking/authelia
+          - name: netbird
+            path: apps/networking/netbird
+          - name: mosquitto
+            path: apps/networking/mosquitto
+
+          # Monitoring
+          - name: uptime-kuma
+            path: apps/monitoring/uptime-kuma
+          - name: glances
+            path: apps/monitoring/glances
+
+          # Media
+          - name: jellyfin
+            path: apps/media/jellyfin
+          - name: arr-suite
+            path: apps/media/arr-suite
+          - name: metube
+            path: apps/media/metube
+          - name: music-assistant
+            path: apps/media/music-assistant
+
+          # Utilities
+          - name: paperless
+            path: apps/utilities/paperless
+          - name: sftpgo
+            path: apps/utilities/sftpgo
+          - name: sshwifty
+            path: apps/utilities/sshwifty
+          - name: node-red
+            path: apps/utilities/node-red
+          - name: heimdall
+            path: apps/utilities/heimdall
+          - name: immich
+            path: apps/utilities/immich
+
+          # KEDA
+          - name: keda
+            path: base/keda
+  template:
+    metadata:
+      name: "{{name}}"
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/YOUR_USERNAME/homelab.git
+        targetRevision: main
+        path: "{{path}}"
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m0s

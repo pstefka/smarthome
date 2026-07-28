@@ -1,0 +1,12 @@
+# Schematic JSON for factory.talos.dev API
+# POST to https://factory.talos.dev/schematics with this body
+{
+  "name": "budabuda-k8s",
+  "extensions": [
+    "siderolabs/iscsi-tools",
+    "siderolabs/nfs-utils",
+    "siderolabs/qemu-guest-agent",
+    "siderolabs/usb-audio-drivers",
+    "siderolabs/netbird"
+  ]
+}

@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cilium
+  labels:
+    app.kubernetes.io/part-of: budabuda-k8s
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: cilium
+  namespace: cilium
+spec:
+  interval: 24h
+  url: https://helm.cilium.io
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+  namespace: cilium
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cilium
+      version: 1.17.2 # Latest stable — check for updates
+      sourceRef:
+        kind: HelmRepository
+        name: cilium
+        namespace: cilium
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    # kube-proxy replacement (Talos has kube-proxy disabled)
+    kubeProxyReplacement: true
+
+    # CNI — Talos uses CNI: none
+    cni:
+      install: true
+
+    # Routing mode — native (no overlay)
+    routingMode: native
+
+    # IPAM — use Kubernetes IPAM for pod IPs
+    ipam:
+      operator:
+        clusterPoolIPv4PodCIDRList: "10.244.0.0/16"
+
+    # L2 announcements — replaces MetalLB
+    l2announcements:
+      enabled: true
+      config:
+        leaseDuration: 120s
+        leaseRenewDeadline: 60s
+        leaseRetryPeriod: 20s
+
+    # LB-IPAM pool for LoadBalancer Services
+    operator:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+
+    # Gateway API — replaces Traefik
+    gatewayAPI:
+      enabled: true
+
+    # Hubble — observability
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+
+    # Cilium agent resources
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+    # Enable BBR for TCP congestion control (better throughput)
+    socketLB:
+      enabled: true
+
+    # External access via Cilium LB (NOT kube-vip)
+    # kube-vip handles API server VIP only
+    externalIPs:
+      enabled: true
+---
+# LB-IPAM IP Pool for LoadBalancer Services
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: default-pool
+  namespace: cilium
+spec:
+  cidrs:
+    - 192.168.1.201/32
+    - 192.168.1.202/32
+    - 192.168.1.203/32
+    - 192.168.1.204/32
+    - 192.168.1.205/32
+    - 192.168.1.206/32
+    - 192.168.1.207/32
+    - 192.168.1.208/32
+    - 192.168.1.209/32
+---
+# L2 Announcement Policy
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: default
+  namespace: cilium
+spec:
+  loadBalancerIPs: true
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
+  interfaces:
+    - net0

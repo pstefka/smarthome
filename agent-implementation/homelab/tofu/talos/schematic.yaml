@@ -1,0 +1,34 @@
+# Talos Linux Factory Schematic
+# Generate schematic ID: https://factory.talos.dev/schematics
+# API: POST https://factory.talos.dev/schematics with body containing extensions
+#
+# After generating, update tofu/modules/talos/main.tf with the schematic ID
+# in the install image URL.
+
+name: budabuda-k8s
+
+description: |
+  Talos Linux schematic for budabuda K8s homelab.
+  Includes: Longhorn (iSCSI), NFS, Proxmox agent, USB audio, Netbird.
+
+extensions:
+  # Longhorn iSCSI support
+  - siderolabs/iscsi-tools
+
+  # NFS client for Synology backup
+  - siderolabs/nfs-utils
+
+  # Proxmox guest agent integration
+  - siderolabs/qemu-guest-agent
+
+  # USB DAC passthrough (Music Assistant)
+  - siderolabs/usb-audio-drivers
+
+  # Netbird zero-trust networking
+  - siderolabs/netbird
+
+# Generate with: https://factory.talos.dev/schematics
+# Or via API:
+#   curl -X POST https://factory.talos.dev/schematics \
+#     -H "Content-Type: application/json" \
+#     -d @schematic.json

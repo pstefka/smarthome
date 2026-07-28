@@ -1,0 +1,118 @@
+# Immich — Official Helm chart via ArgoCD
+# Chart: https://immich-app.github.io/immich-charts
+# OCI: ghcr.io/immich-app/immich-charts/immich
+
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: immich
+  namespace: default
+spec:
+  interval: 24h
+  type: oci
+  url: oci://ghcr.io/immich-app/immich-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: immich
+      version: 0.7.3 # Check for latest
+      sourceRef:
+        kind: HelmRepository
+        name: immich
+        namespace: default
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    # Immich server
+    immich-server:
+      enabled: true
+      env:
+        TZ: "Europe/Bratislava"
+
+    # Machine learning
+    machine-learning:
+      enabled: true
+
+    # PostgreSQL (use cloudnative-pg or embedded)
+    postgresql:
+      enabled: true
+      auth:
+        # Use SOPS-encrypted secret
+        existingSecret: immich-postgres-credentials
+
+    # Redis
+    redis:
+      enabled: true
+
+    # Persistence
+    persistence:
+      library:
+        enabled: true
+        existingClaim: immich-library
+---
+# Library PVC for photos/videos
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 200Gi
+---
+# PostgreSQL credentials (encrypted with SOPS)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: immich-postgres-credentials
+  namespace: default
+type: Opaque
+stringData:
+  postgres-password: "REPLACE_WITH_SOPS_ENCRYPTED_PASSWORD"
+---
+# HTTPRoute for Immich (behind ExternalAuth)
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: immich
+  namespace: default
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: ingress
+  hostnames:
+    - photos.budabuda-k8s.duckdns.org
+  rules:
+    - filters:
+        - type: ExternalAuth
+          externalAuth:
+            protocol: HTTP
+            backendRef:
+              kind: Service
+              name: authelia
+              namespace: auth
+              port: 80
+            http:
+              path: /api/authz/ext-authz
+              allowedResponseHeaders:
+                - Remote-User
+                - Remote-Groups
+                - Remote-Email
+      backendRefs:
+        - name: immich-server
+          port: 80
